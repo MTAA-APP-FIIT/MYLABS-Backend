@@ -13,6 +13,28 @@ try {
   console.error('Unable to connect to the database:', error);
 }
 
+sequelize
+  .sync()
+  .then((result) => {
+    console.log(result);
+
+  })
+  .catch((err) => {
+    console.log(err)
+  });
+  
+// projects endpoint
+app.route('/projects')
+  .get((req, res) => {
+    res.send('Get a random book')
+  })
+  .post((req, res) => {
+    res.send('Add a book')
+  })
+
+app.get('/projects/:projectId', (req, res) => {
+  res.json(req.params)
+})
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
