@@ -1,5 +1,7 @@
 const express = require('express')
 const app = express()
+const project = require('./routes/project')
+const task = require('./routes/task')
 
 const port = 3000
 
@@ -13,28 +15,18 @@ try {
   console.error('Unable to connect to the database:', error);
 }
 
-sequelize
-  .sync()
-  .then((result) => {
-    console.log(result);
-
-  })
-  .catch((err) => {
-    console.log(err)
-  });
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
   
-// projects endpoint
-app.route('/projects')
-  .get((req, res) => {
-    res.send('Get a random book')
-  })
-  .post((req, res) => {
-    res.send('Add a book')
-  })
+app.route('/projects').get(project.getProjects);
+app.route('/projects').post(project.postProjects);
+app.route('/projects/:projectId').get(project.getProjectsId);
 
-app.get('/projects/:projectId', (req, res) => {
-  res.json(req.params)
-})
+app.route('/tasks').get(task.getTasks);
+app.route('/tasks').post(task.postTasks);
+app.route('/tasks/:taskId').get(task.getTasksId);
+app.route('/tasks/:taskId').put(task.updateTask);
+app.route('/tasks/:taskId').delete(task.deleteTask);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
