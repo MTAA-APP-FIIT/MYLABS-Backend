@@ -7,7 +7,7 @@ const getTasks = async (req, res) => {
     try {
         const tasks = await task.findAll({
             where: {
-                owner: req.body.id
+                owner: req.body.owner
             }
         })
         if (tasks.length < 1) {
@@ -31,7 +31,7 @@ const getTasksId = async (req, res) => {
                 id: BigInt(req.params.taskId)
             }
         })
-        if (tasks.length < 1) {
+        if (tasks == null) {
             res.status(404)
             res.send()
         }
@@ -46,6 +46,15 @@ const getTasksId = async (req, res) => {
 
 const postTasks = async (req, res) => {
     try {
+        // if anything is missing, cartch error and send 400 bad request
+        const nameLen = req.body.name.length
+        const ownerLen =  req.body.owner.length
+        const descriptionLen =  req.body.description.length
+        const startLen =  req.body.start.length
+        const endLen =  req.body.end.length
+        const notesLen =  req.body.notes.length
+        const stateLen =  req.body.state.length
+
         const dateTime = new Date();
         const day = ("0" + dateTime.getDate()).slice(-2);
         const month = ("0" + (dateTime.getMonth() + 1)).slice(-2);

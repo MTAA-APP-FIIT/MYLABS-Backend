@@ -6,7 +6,7 @@ const getProjects = async (req, res) => {
     try {
         const projects = await project.findAll({
             where: {
-                owner: req.body.id
+                owner: req.body.owner
             }
         })
         if (projects.length < 1) {
@@ -29,7 +29,7 @@ const getProjectsId = async (req, res) => {
                 id: BigInt(req.params.projectId)
             }
         })
-        if (projects.length < 1) {
+        if (projects == null) {
             res.status(404)
             res.send()
         }
@@ -45,6 +45,12 @@ const getProjectsId = async (req, res) => {
 
 const postProjects = async (req, res) => {
     try {
+         // if anything is missing, cartch error and send 400 bad request
+         const nameLen = req.body.name.length
+         const ownerLen =  req.body.owner.length
+         const descriptionLen =  req.body.description.length
+         const deadline =  req.body.deadline.length
+
         const dateTime = new Date();
         const day = ("0" + dateTime.getDate()).slice(-2);
         const month = ("0" + (dateTime.getMonth() + 1)).slice(-2);
