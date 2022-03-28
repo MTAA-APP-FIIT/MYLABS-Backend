@@ -10,15 +10,13 @@ const getProjects = async (req, res) => {
             }
         })
         if (projects.length < 1) {
-            res.status(404)
-            res.send()
+            res.sendStatus(404)
         }
         else{
             res.send(projects)
         }
     } catch (err) {
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 };
 
@@ -30,16 +28,14 @@ const getProjectsId = async (req, res) => {
             }
         })
         if (projects == null) {
-            res.status(404)
-            res.send()
+            res.sendStatus(404)
         }
         else{
             res.send(projects)
         }
         
     } catch (err) {
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 };
 
@@ -67,11 +63,9 @@ const postProjects = async (req, res) => {
             delete: false,
 
         })
-        res.status(200)
-        res.send()
+        res.sendStatus(200)
     } catch (err) {
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 };
 

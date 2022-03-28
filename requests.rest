@@ -1,0 +1,206 @@
+# GETS SIMON
+###
+
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+
+
+###
+
+GET http://localhost:3000/users/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+
+
+###
+
+GET http://localhost:3000/users/1/friends
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+
+
+# POSTS SIMON
+###
+
+POST http://localhost:3000/users/1/friends
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{ 
+    "friend_id": "2",
+    "state": "0",
+    "created_at": "1.1.2020",
+    "updated_at": "1.1.2020"
+}
+
+
+# PATCHES SIMON
+###
+PATCH http://localhost:3000/users/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{
+    "name": "Kyle Updated 4",
+    "username": "xxkylex"
+}
+
+###
+
+PATCH http://localhost:3000/users/1/friends
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{ 
+    "friend_id": "2",
+    "state": "true"
+}
+
+
+# DELETES SIMON
+###
+
+DELETE http://localhost:3000/users/1/friends
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{
+    "friend_id": "2"
+}
+
+###
+
+GET http://localhost:3000/decline
+
+###
+
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{ 
+    "name": "Oli",
+    "username": "1",
+    "password": "MrSkeletor123",
+    "email": "oliverkolek@oliverkolek.com",
+    "phone": "1",
+    "position": "1",
+    "birthdate": "1.1.2020",
+    "profile_picture": "",
+    "created_at": "1.1.2020",
+    "updated_at": "1.1.2020",
+    "delete": "false"
+}
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{ 
+    "email": "simon@gmail.com",
+    "password": "MrSkeletor123"
+}
+
+
+
+
+
+
+# GETS OLI
+###
+
+GET http://localhost:3000/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{
+  "owner":"1"
+}
+
+
+###
+
+GET http://localhost:3000/tasks/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+
+
+###
+
+GET http://localhost:3000/projects
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{
+    "owner": "1"
+}
+
+
+###
+
+GET http://localhost:3000/projects/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+
+
+# POSTS OLI
+###
+
+POST  http://localhost:3000/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{
+    "name": "Test",
+     "description" :"Just test",
+     "start":"1.1.2019",
+     "end": "1.1.2019",
+     "state": "0",
+     "owner": "1",
+     "notes": "Note",
+     "created_at":"1.1.2020",
+     "updated_at":"1.1.2020",
+     "delete": "0"
+}
+
+###
+
+POST  http://localhost:3000/projects
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{
+    "name": "Test",
+     "description" :"Just test",
+     "deadline": "1.1.2019",
+     "created_at":"1.1.2020",
+     "updated_at":"1.1.2020",
+     "delete": "0"
+
+}
+
+# PUTS OLI
+###
+
+
+PUT  http://localhost:3000/tasks/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+
+{
+    "name": "Test",
+     "description" :"Just test",
+     "start":"1.1.2019",
+     "end": "1.1.2019",
+     "owner": "1",
+     "state": "0",
+     "notes": "Working",
+     "created_at":"1.1.2020",
+     "updated_at":"1.1.2020",
+     "delete": "0"
+
+}
+
+# DELETES OLI
+
+###
+DELETE  http://localhost:3000/tasks/8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
+Content-Type: application/json
+

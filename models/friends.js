@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
 
-const user_task = sequelize.define("user_task", {
+const friend = sequelize.define("friends", {
     id: {
         type: DataTypes.BIGINT,
         autoIncrement: true,
@@ -13,10 +13,14 @@ const user_task = sequelize.define("user_task", {
         allowNull: false,
         unique: 'actions_unique',
     },
-    task_id: {
+    friend_id: {
         type: DataTypes.BIGINT,
         allowNull: false,
         unique: 'actions_unique',
+    },
+    state: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
     },
     created_at: {
         type: DataTypes.DATE,
@@ -29,11 +33,11 @@ const user_task = sequelize.define("user_task", {
 },{
     uniqueKeys: {
         actions_unique: {
-            fields: ['user_id', 'task_id']
+            fields: ['user_id', 'friend_id']
         }
     }
 
 
 });
 
-module.exports = user_task;
+module.exports = friend;

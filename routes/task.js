@@ -13,16 +13,14 @@ const getTasks = async (req, res) => {
             }
         })
         if (tasks.length < 1) {
-            res.status(404)
-            res.send()
+            res.sendStatus(404)
         }
         else{
             res.send(tasks)
         }
         
     } catch (err) {
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 };
 
@@ -34,15 +32,13 @@ const getTasksId = async (req, res) => {
             }
         })
         if (tasks == null) {
-            res.status(404)
-            res.send()
+            res.sendStatus(404)
         }
         else{
             res.send(tasks)
         }
     } catch (err) {
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 };
 
@@ -103,11 +99,9 @@ const postTasks = async (req, res) => {
         }
         
 
-        res.status(200)
-        res.send()
+        res.sendStatus(200)
     } catch (err) {
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 };
 
@@ -135,8 +129,7 @@ const updateTask = async (req, res) => {
         })
 
         if (check < 1) {
-            res.status(404)
-            res.send()
+            res.sendStatus(404)
         }
         else {
             const tasks = await task.update(
@@ -179,8 +172,7 @@ const updateTask = async (req, res) => {
 
     } catch (err) {
         console.log(err)
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 
 };
@@ -192,8 +184,7 @@ const deleteTask = async (req, res) => {
         })
 
         if (check < 1) {
-            res.status(404)
-            res.send()
+            res.sendStatus(404)
         }
         else {
             const users_tasksToDelete = await user_task.destroy({
@@ -208,8 +199,7 @@ const deleteTask = async (req, res) => {
         }
     } catch (err) {
         console.log(err)
-        res.status(400)
-        res.send()
+        res.sendStatus(400)
     }
 }
 
