@@ -2,6 +2,8 @@
 const e = require('express');
 const { type } = require('express/lib/response');
 const task = require('../models/task')
+const user_task = require('../models/user_task')
+const user_project = require('../models/user_project')
 
 const getTasks = async (req, res) => {
     try {
@@ -54,6 +56,7 @@ const postTasks = async (req, res) => {
         const endLen =  req.body.end.length
         const notesLen =  req.body.notes.length
         const stateLen =  req.body.state.length
+        const project_idLen =  req.body.project_id.length
 
         const dateTime = new Date();
         const day = ("0" + dateTime.getDate()).slice(-2);
@@ -72,8 +75,34 @@ const postTasks = async (req, res) => {
             created_date: new Date(date),
             updated_date: new Date(date),
             delete: false,
+            project_id: req.body.project_id
 
         })
+
+        const newUser_Task = await user_task.create({
+            id_user: req.body.owner,
+            id_task: newTask.id,
+            created_date: new Date(date),
+            updated_date: new Date(date),
+        })
+
+        const check_user_project = await user_project.findOne({
+            where: {
+                id_user: BigInt(req.body.owner),
+                id_project: BigInt(req.body.project_id)
+            }
+        })
+        
+        if (check_user_project == null) {
+            const newProject_Task = await user_project.create({
+                id_user: req.body.owner,
+                id_project: req.body.project_id,
+                created_date: new Date(date),
+                updated_date: new Date(date),
+            })
+        }
+        
+
         res.status(200)
         res.send()
     } catch (err) {
@@ -92,6 +121,7 @@ const updateTask = async (req, res) => {
         const endLen =  req.body.end.length
         const notesLen =  req.body.notes.length
         const stateLen =  req.body.state.length
+        const project_idLen =  req.body.project_id.length
 
 
         const dateTime = new Date();
@@ -120,15 +150,35 @@ const updateTask = async (req, res) => {
                     state: req.body.state,
                     updated_date: new Date(date),
                     delete: false,
+                    project_id: req.body.project_id
     
                 },
                 {where: {id: BigInt(req.params.taskId)}
                 }
             );
+
+            const user_Task = await user_task.update({
+                id_user: req.body.owner,
+                id_task: BigInt(req.params.taskId),
+                updated_date: new Date(date),
+            },
+            {where: {id_task: BigInt(req.params.taskId)}
+                }
+            )
+
+            const user_Project = await user_project.update({
+                id_user: req.body.owner,
+                id_project: req.params.project_id,
+                updated_date: new Date(date),
+            },
+            {where: {id_task: BigInt(req.params.taskId)}
+                }
+            )
             res.send()
         }
 
     } catch (err) {
+        console.log(err)
         res.status(400)
         res.send()
     }
@@ -146,6 +196,9 @@ const deleteTask = async (req, res) => {
             res.send()
         }
         else {
+            const users_tasksToDelete = await user_task.destroy({
+                where:{id_task: BigInt(req.params.taskId)}
+            });
 
             const taskToDelete = await task.findOne({
                 where:{id: BigInt(req.params.taskId)}

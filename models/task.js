@@ -38,6 +38,9 @@ const Tasks = sequelize.define('tasks', {
     delete: {
         type: DataTypes.BOOLEAN
     },
+    project_id: {
+        type: DataTypes.BIGINT
+    },
 
 });
 
