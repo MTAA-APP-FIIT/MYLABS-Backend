@@ -76,8 +76,8 @@ POST http://localhost:3000/register
 Content-Type: application/json
 
 { 
-    "name": "Oli",
-    "username": "1",
+    "name": "Olisag",
+    "username": "1asg",
     "password": "MrSkeletor123",
     "email": "oliverkolek@oliverkolek.com",
     "phone": "1",
@@ -118,7 +118,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/tasks/1
+GET http://localhost:3000/tasks/10
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
 
 
@@ -156,7 +156,8 @@ Content-Type: application/json
      "notes": "Note",
      "created_at":"1.1.2020",
      "updated_at":"1.1.2020",
-     "delete": "0"
+     "delete": "0",
+     "project_id": "1"
 }
 
 ###
@@ -167,6 +168,7 @@ Content-Type: application/json
 
 {
     "name": "Test",
+    "owner": "1",
      "description" :"Just test",
      "deadline": "1.1.2019",
      "created_at":"1.1.2020",
@@ -179,28 +181,29 @@ Content-Type: application/json
 ###
 
 
-PUT  http://localhost:3000/tasks/5
+PUT  http://localhost:3000/tasks/10
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
 Content-Type: application/json
 
 {
     "name": "Test",
      "description" :"Just test",
+     "owner": "1",
      "start":"1.1.2019",
      "end": "1.1.2019",
-     "owner": "1",
-     "state": "0",
      "notes": "Working",
-     "created_at":"1.1.2020",
-     "updated_at":"1.1.2020",
-     "delete": "0"
+     "state": "1",
+     "created_date":"1.1.2020",
+     "updated_date":"1.1.2020",
+     "delete": "false",
+     "project_id": "6"
 
 }
 
 # DELETES OLI
 
 ###
-DELETE  http://localhost:3000/tasks/8
+DELETE  http://localhost:3000/tasks/10
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
 Content-Type: application/json
 

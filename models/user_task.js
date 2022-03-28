@@ -1,39 +1,26 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../db");
+const {DataTypes} = require("sequelize");
+const {sequelize} = require("../db");
 
-const user_task = sequelize.define("user_task", {
+const User_Task = sequelize.define('users_tasks', {
     id: {
         type: DataTypes.BIGINT,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
+        
     },
-    user_id: {
+    id_user: {
         type: DataTypes.BIGINT,
-        allowNull: false,
-        unique: 'actions_unique',
     },
-    task_id: {
+    id_task: {
         type: DataTypes.BIGINT,
-        allowNull: false,
-        unique: 'actions_unique',
     },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
+    created_date: {
+        type: DataTypes.DATE
     },
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-    }
-},{
-    uniqueKeys: {
-        actions_unique: {
-            fields: ['user_id', 'task_id']
-        }
-    }
-
+    updated_date: {
+        type: DataTypes.DATE
+    },
 
 });
 
-module.exports = user_task;
+module.exports = User_Task;

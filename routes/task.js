@@ -44,6 +44,7 @@ const getTasksId = async (req, res) => {
 
 const postTasks = async (req, res) => {
     try {
+        
         // if anything is missing, cartch error and send 400 bad request
         const nameLen = req.body.name.length
         const ownerLen =  req.body.owner.length
@@ -53,7 +54,7 @@ const postTasks = async (req, res) => {
         const notesLen =  req.body.notes.length
         const stateLen =  req.body.state.length
         const project_idLen =  req.body.project_id.length
-
+        
         const dateTime = new Date();
         const day = ("0" + dateTime.getDate()).slice(-2);
         const month = ("0" + (dateTime.getMonth() + 1)).slice(-2);
@@ -75,6 +76,7 @@ const postTasks = async (req, res) => {
 
         })
 
+        
         const newUser_Task = await user_task.create({
             id_user: req.body.owner,
             id_task: newTask.id,
@@ -117,7 +119,7 @@ const updateTask = async (req, res) => {
         const stateLen =  req.body.state.length
         const project_idLen =  req.body.project_id.length
 
-
+        
         const dateTime = new Date();
         const day = ("0" + dateTime.getDate()).slice(-2);
         const month = ("0" + (dateTime.getMonth() + 1)).slice(-2);
@@ -149,7 +151,7 @@ const updateTask = async (req, res) => {
                 {where: {id: BigInt(req.params.taskId)}
                 }
             );
-
+            
             const user_Task = await user_task.update({
                 id_user: req.body.owner,
                 id_task: BigInt(req.params.taskId),
@@ -158,20 +160,20 @@ const updateTask = async (req, res) => {
             {where: {id_task: BigInt(req.params.taskId)}
                 }
             )
-
+            
+            
             const user_Project = await user_project.update({
                 id_user: req.body.owner,
                 id_project: req.params.project_id,
                 updated_date: new Date(date),
             },
-            {where: {id_task: BigInt(req.params.taskId)}
+            {where: {id_user: BigInt(req.params.taskId)}
                 }
             )
-            res.send()
+            res.sendStatus(200)
         }
 
     } catch (err) {
-        console.log(err)
         res.sendStatus(400)
     }
 
@@ -195,10 +197,9 @@ const deleteTask = async (req, res) => {
                 where:{id: BigInt(req.params.taskId)}
             });
             taskToDelete.destroy()
-            res.send()
+            res.sendStatus(200)
         }
     } catch (err) {
-        console.log(err)
         res.sendStatus(400)
     }
 }
