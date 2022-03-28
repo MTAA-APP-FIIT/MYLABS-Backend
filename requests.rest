@@ -27,8 +27,8 @@ Content-Type: application/json
 { 
     "friend_id": "2",
     "state": "0",
-    "created_at": "1.1.2020",
-    "updated_at": "1.1.2020"
+    "created_at": "",
+    "updated_at": ""
 }
 
 
@@ -84,8 +84,8 @@ Content-Type: application/json
     "position": "1",
     "birthdate": "1.1.2020",
     "profile_picture": "",
-    "created_at": "1.1.2020",
-    "updated_at": "1.1.2020",
+    "created_at": "",
+    "updated_at": "",
     "delete": "false"
 }
 

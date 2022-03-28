@@ -115,6 +115,8 @@ const createfriends = async (req, res) => {
     
     if (user2_exists && user1_exists){
       const customJson = Object.assign({user_id:req.params.id}, req.body);
+      req.body.created_at = Date.now()
+      req.body.updated_at = Date.now()
       await friends.create(customJson);
       res.send(customJson);
     }
@@ -153,6 +155,8 @@ const createuser = async (req, res) => {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10)
       req.body.password = hashedPassword
+      req.body.created_at = Date.now()
+      req.body.updated_at = Date.now()
       await user.create(req.body);
 
     } catch {
