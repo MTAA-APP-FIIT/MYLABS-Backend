@@ -7,9 +7,10 @@ const user_project = require('../models/user_project')
 
 const getTasks = async (req, res) => {
     try {
+        
         const tasks = await task.findAll({
             where: {
-                owner: req.body.owner
+                owner: BigInt(req.body.owner)
             }
         })
         if (tasks.length < 1) {

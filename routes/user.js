@@ -87,8 +87,10 @@ const updatefriends = async (req, res) => {
     if (friendsreturn.length === 0) {
       res.sendStatus(404)
     }
-    friendsreturn.update(req.body)
-    res.send(friendsreturn)
+
+    const customJson = Object.assign({updated_at:Date.now()}, req.body);
+    friendsreturn.update(customJson)
+    res.send(customJson)
   } catch{
     res.sendStatus(400)
   }
@@ -115,9 +117,11 @@ const createfriends = async (req, res) => {
     
     if (user2_exists && user1_exists){
       const customJson = Object.assign({user_id:req.params.id}, req.body);
-      req.body.created_at = Date.now()
-      req.body.updated_at = Date.now()
+      customJson.created_at = Date.now()
+      customJson.updated_at = Date.now()
+      
       await friends.create(customJson);
+      console.log("hello")
       res.send(customJson);
     }
     else {
@@ -131,6 +135,17 @@ const createfriends = async (req, res) => {
 // For DELETE /users/:id/friends
 const declinefriends = async (req, res) => {
   try {
+    
+    const friendsreturn = await friends.findOne({
+      where: {
+        user_id: req.params.id,
+        friend_id: req.body.friend_id
+    }
+    })
+    if (friendsreturn.length < 1) {
+      res.sendStatus(404)
+    }
+
     await friends.destroy({
       where: {
         user_id: req.params.id,

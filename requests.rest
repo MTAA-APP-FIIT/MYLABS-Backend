@@ -34,7 +34,7 @@ Content-Type: application/json
 
 # PATCHES SIMON
 ###
-PATCH http://localhost:3000/users/2
+PATCH http://localhost:3000/users/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2ltb25AZ21haWwuY29tIiwiaWF0IjoxNjQ3OTc0NjczfQ.F14QJJGDoGkk8Cl67gQWVui23v5vlyu1K-lqWUPgP08
 Content-Type: application/json
 
@@ -51,7 +51,7 @@ Content-Type: application/json
 
 { 
     "friend_id": "2",
-    "state": "true"
+    "state": "1"
 }
 
 
@@ -79,7 +79,7 @@ Content-Type: application/json
     "name": "Olisag",
     "username": "1asg",
     "password": "MrSkeletor123",
-    "email": "oliverkolek@oliverkolek.com",
+    "email": "oliverkoleko@oliverkoleko.com",
     "phone": "1",
     "position": "1",
     "birthdate": "1.1.2020",

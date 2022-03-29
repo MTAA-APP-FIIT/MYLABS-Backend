@@ -37,7 +37,7 @@ const product = sequelize.define("users", {
         allowNull: false,
     },
     profile_picture: {
-        type: DataTypes.BLOB,
+        type: DataTypes.STRING,
         allowNull: true,
     },
     created_at: {
