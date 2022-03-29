@@ -84,22 +84,6 @@ const postTasks = async (req, res) => {
             created_date: new Date(date),
             updated_date: new Date(date),
         })
-
-        const check_user_project = await user_project.findOne({
-            where: {
-                id_user: BigInt(req.body.owner),
-                id_project: BigInt(req.body.project_id)
-            }
-        })
-        
-        if (check_user_project == null) {
-            const newProject_Task = await user_project.create({
-                id_user: req.body.owner,
-                id_project: req.body.project_id,
-                created_date: new Date(date),
-                updated_date: new Date(date),
-            })
-        }
         
 
         res.sendStatus(200)

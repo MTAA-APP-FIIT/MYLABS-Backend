@@ -1,6 +1,7 @@
 // model
 const { type } = require('express/lib/response');
 const project = require('../models/project')
+const user_project = require('../models/user_project')
 
 const getProjects = async (req, res) => {
     try {
@@ -63,6 +64,23 @@ const postProjects = async (req, res) => {
             delete: false,
 
         })
+
+        const check_user_project = await user_project.findOne({
+            where: {
+                id_user: BigInt(req.body.owner),
+                id_project: BigInt(newProject.id)
+            }
+        })
+        
+        if (check_user_project == null) {
+            const newProject_Task = await user_project.create({
+                id_user: BigInt(req.body.owner),
+                id_project: BigInt(newProject.id),
+                created_date: new Date(date),
+                updated_date: new Date(date),
+            })
+        }
+
         res.sendStatus(200)
     } catch (err) {
         res.sendStatus(400)
