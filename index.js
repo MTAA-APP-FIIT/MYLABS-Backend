@@ -56,10 +56,7 @@ app.route("/users/:id/friends").post(authentication.checkAuthenticated, user.cre
 app.route("/users/:id/friends").delete(authentication.checkAuthenticated, user.declinefriends);
 
 app.route("/register").post(user.createuser);
-app.route("/login").post(authentication.checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/users',
-  failureRedirect: '/login'
-}));
+app.route("/login").post(authentication.checkNotAuthenticated, user.login);
 
 
 app.route("/decline").get((req, res) => {

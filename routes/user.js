@@ -181,5 +181,31 @@ const createuser = async (req, res) => {
     
 };
 
+const login = async (req, res) => {
+  try {
+    const userreturn = await user.findOne({
+      where: {
+        email: req.body.email,
+    }
+    });
+    if (userreturn == null){
+      res.sendStatus(404)
+    }
+    hashed = await bcrypt.compare(req.body.password, userreturn.password)
+    if (hashed){
+      const token = jwt.sign({ email: req.body.email }, 'secret', { expiresIn: '1h' });
+      res.status(200).json({"token": token});
+    }
+    else {
+      res.sendStatus(404)
+    }
+  } catch {
+    res.sendStatus(400)
+  } 
+   
+  
+  
+};
 
-module.exports = { getusers, getuser, patchuser, createuser, getfriends, createfriends, updatefriends, declinefriends};
+
+module.exports = { getusers, getuser, patchuser, createuser, getfriends, createfriends, updatefriends, declinefriends, login};
