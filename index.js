@@ -12,6 +12,18 @@ const session = require('express-session')
 const authentication = require('./authentication')
 const passport = require('passport')
 const initializePassport = require('./passport-config')
+const multer = require("multer");
+
+
+// Define Multer
+const storage = multer.diskStorage({
+  destination: "./uploads/",
+  filename: function (req, file, cb) {
+    cb(null,  "SomeImage" + "." + file.originalname.split(".").pop());
+  },
+});
+
+const diskStorage = multer({ storage: storage });
 
 initializePassport(
   passport
@@ -61,6 +73,16 @@ app.route("/login").post(authentication.checkNotAuthenticated, user.login);
 
 app.route("/decline").get((req, res) => {
   res.sendStatus(401)
+});
+
+app.post("/img", diskStorage.single("image"), async (req, res) => {
+  try {
+    console.log(req.file); // File which is uploaded in /uploads folder.
+    console.log(req.body); // Body
+    res.send({ congrats: "data recieved" });
+  } catch (error) {
+    res.status(500).send("Error");
+  }
 });
 
 

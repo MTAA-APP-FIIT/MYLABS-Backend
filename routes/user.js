@@ -194,7 +194,7 @@ const login = async (req, res) => {
     hashed = await bcrypt.compare(req.body.password, userreturn.password)
     if (hashed){
       const token = jwt.sign({ email: req.body.email }, 'secret', { expiresIn: '1h' });
-      res.status(200).json({"token": token});
+      res.status(200).json({"token": token, "id": userreturn.id});
     }
     else {
       res.sendStatus(404)
