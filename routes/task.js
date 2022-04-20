@@ -10,7 +10,27 @@ const getTasks = async (req, res) => {
         
         const tasks = await task.findAll({
             where: {
-                owner: BigInt(req.body.owner)
+                owner: BigInt(req.params.owner)
+            }
+        })
+        if (tasks.length < 1) {
+            res.sendStatus(404)
+        }
+        else{
+            res.send(tasks)
+        }
+        
+    } catch (err) {
+        res.sendStatus(400)
+    }
+};
+
+const getTasksByProject = async (req, res) => {
+    try {
+        
+        const tasks = await task.findAll({
+            where: {
+                project_id: BigInt(req.params.projectId)
             }
         })
         if (tasks.length < 1) {
@@ -53,7 +73,6 @@ const postTasks = async (req, res) => {
         const startLen =  req.body.start.length
         const endLen =  req.body.end.length
         const notesLen =  req.body.notes.length
-        const stateLen =  req.body.state.length
         const project_idLen =  req.body.project_id.length
         
         const dateTime = new Date();
@@ -189,4 +208,4 @@ const deleteTask = async (req, res) => {
     }
 }
 
-module.exports = {postTasks, getTasks, getTasksId, updateTask, deleteTask};
+module.exports = {postTasks, getTasks, getTasksId, updateTask, deleteTask, getTasksByProject};

@@ -7,7 +7,7 @@ const getProjects = async (req, res) => {
     try {
         const projects = await project.findAll({
             where: {
-                owner: req.body.owner
+                owner: BigInt(req.params.owner)
             }
         })
         if (projects.length < 1) {

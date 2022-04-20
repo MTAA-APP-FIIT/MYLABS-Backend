@@ -48,11 +48,12 @@ try {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
   
-app.route('/projects').get(authentication.checkAuthenticated, project.getProjects);
+app.route('/projects/owner/:owner').get(authentication.checkAuthenticated, project.getProjects);
 app.route('/projects').post(authentication.checkAuthenticated, project.postProjects);
 app.route('/projects/:projectId').get(authentication.checkAuthenticated, project.getProjectsId);
 
-app.route('/tasks').get(authentication.checkAuthenticated, task.getTasks);
+app.route('/tasks/owner/:owner').get(authentication.checkAuthenticated, task.getTasks);
+app.route('/tasks/project/:projectId').get(authentication.checkAuthenticated, task.getTasksByProject);
 app.route('/tasks').post(authentication.checkAuthenticated, task.postTasks);
 app.route('/tasks/:taskId').get(authentication.checkAuthenticated, task.getTasksId);
 app.route('/tasks/:taskId').put(authentication.checkAuthenticated, task.updateTask);
