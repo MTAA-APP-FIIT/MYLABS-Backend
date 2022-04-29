@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const project = require('./routes/project')
+const projectModel = require('./models/project')
 const task = require('./routes/task')
 const user = require("./routes/user");
 const port = 3000
@@ -14,6 +15,9 @@ const passport = require('passport')
 const initializePassport = require('./passport-config')
 const multer = require("multer");
 
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const { callbackify } = require('util');
 
 // Define Multer
 const storage = multer.diskStorage({
@@ -78,16 +82,47 @@ app.route("/decline").get((req, res) => {
 
 app.post("/img", diskStorage.single("image"), async (req, res) => {
   try {
-    console.log(req.file); // File which is uploaded in /uploads folder.
-    console.log(req.body); // Body
+    console.log(req.file); 
+    console.log(req.body); 
     res.send({ congrats: "data recieved" });
   } catch (error) {
     res.status(500).send("Error");
   }
 });
 
+const httpServer = createServer(app);
+const io = new Server(httpServer, { /* options */ });
 
-app.listen(port, () => {
+
+
+httpServer.listen(3000, () => {
+  console.log("Server running")
+});
+
+io.on("connection", (socket) => {
+  console.log("User connected" + socket.id)
+
+    socket.on('hello', async (data) => {
+      console.log("Data received")
+      const projects = await projectModel.findAll({
+            where: {
+                owner: 2
+            }
+      })
+      console.log(projects)
+      const word = "hello"
+      io.sockets.emit('updatedata', {data:word})
+  })
+
+
+  socket.emit('update',(data) => {
+  })
+  
+
+});
+
+
+/* app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 
-})
+}) */

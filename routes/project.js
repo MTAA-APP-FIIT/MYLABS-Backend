@@ -7,17 +7,17 @@ const getProjects = async (req, res) => {
     try {
         const projects = await project.findAll({
             where: {
-                owner: BigInt(req.params.owner)
+                owner: 2
             }
         })
         if (projects.length < 1) {
-            res.sendStatus(404)
+            return null
         }
         else{
-            res.send(projects)
+            return projects
         }
     } catch (err) {
-        res.sendStatus(400)
+        return null
     }
 };
 
