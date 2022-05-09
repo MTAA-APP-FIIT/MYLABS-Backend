@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const project = require('./routes/project')
 const projectModel = require('./models/project')
+const taskModel = require('./models/task')
 const task = require('./routes/task')
 const user = require("./routes/user");
 const port = 3000
@@ -52,14 +53,14 @@ try {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
   
-app.route('/projects/owner/:owner').get(authentication.checkAuthenticated, project.getProjects);
+// app.route('/projects/owner/:owner').get(authentication.checkAuthenticated, project.getProjects);
 app.route('/projects').post(authentication.checkAuthenticated, project.postProjects);
-app.route('/projects/:projectId').get(authentication.checkAuthenticated, project.getProjectsId);
+// app.route('/projects/:projectId').get(authentication.checkAuthenticated, project.getProjectsId);
 
-app.route('/tasks/owner/:owner').get(authentication.checkAuthenticated, task.getTasks);
-app.route('/tasks/project/:projectId').get(authentication.checkAuthenticated, task.getTasksByProject);
+// app.route('/tasks/owner/:owner').get(authentication.checkAuthenticated, task.getTasks);
+// app.route('/tasks/project/:projectId').get(authentication.checkAuthenticated, task.getTasksByProject);
 app.route('/tasks').post(authentication.checkAuthenticated, task.postTasks);
-app.route('/tasks/:taskId').get(authentication.checkAuthenticated, task.getTasksId);
+// app.route('/tasks/:taskId').get(authentication.checkAuthenticated, task.getTasksId);
 app.route('/tasks/:taskId').put(authentication.checkAuthenticated, task.updateTask);
 app.route('/tasks/:taskId').delete(authentication.checkAuthenticated, task.deleteTask);
 
@@ -102,17 +103,52 @@ httpServer.listen(3000, () => {
 io.on("connection", (socket) => {
   console.log("User connected" + socket.id)
 
-    socket.on('hello', async (data) => {
-      console.log("Data received")
-      const projects = await projectModel.findAll({
-            where: {
-                owner: 2
-            }
-      })
-      console.log(projects)
-      const word = "hello"
-      io.sockets.emit('updatedata', {data:word})
+  socket.on('/projects/owner/:owner', async (ownerId) => {
+    const projects = await projectModel.findAll({
+      where: {
+          owner: ownerId
+      }
+    })
+    io.sockets.emit('RES/projects/owner/:owner', {projects})
   })
+
+  socket.on('/projects/:projectId', async (projectId) => {
+    const projects = await projectModel.findOne({
+      where: {
+          id: projectId
+      }
+    })
+    io.sockets.emit('RES/projects/:projectId', {projects})
+  })
+
+  socket.on('/tasks/owner/:owner', async (ownerId) => {
+    const tasks = await taskModel.findAll({
+      where: {
+          owner: ownerId
+      }
+    })
+    io.sockets.emit('RES/tasks/owner/:owner', {tasks})
+  })
+  
+  socket.on('/tasks/project/:projectId', async (projectId) => {
+    const tasks = await taskModel.findAll({
+      where: {
+          project_id: projectId
+      }
+    })
+    io.sockets.emit('RES/tasks/project/:projectId', {tasks})
+  })
+
+  socket.on('/tasks/:taskId', async (taskId) => {
+    const tasks = await taskModel.findOne({
+      where: {
+          id: taskId
+      }
+    })
+    io.sockets.emit('RES/tasks/:taskId', {tasks})
+  })
+  
+  
 
 
   socket.emit('update',(data) => {

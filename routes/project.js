@@ -7,36 +7,36 @@ const getProjects = async (req, res) => {
     try {
         const projects = await project.findAll({
             where: {
-                owner: 2
+                owner: BigInt(req.params.owner)
             }
         })
         if (projects.length < 1) {
-            return null
-        }
-        else{
-            return projects
-        }
-    } catch (err) {
-        return null
-    }
-};
-
-const getProjectsId = async (req, res) => {
-    try {
-        const projects = await project.findOne({
-            where: {
-                id: BigInt(req.params.projectId)
-            }
-        })
-        if (projects == null) {
             res.sendStatus(404)
         }
         else{
             res.send(projects)
         }
-        
     } catch (err) {
         res.sendStatus(400)
+    }
+};
+
+const getProjectsId = async (projectId) => {
+    try {
+        const projects = await project.findOne({
+            where: {
+                id: projectId
+            }
+        })
+        if (projects == null) {
+            return(404)
+        }
+        else{
+            return(projects)
+        }
+        
+    } catch (err) {
+        return(400)
     }
 };
 
