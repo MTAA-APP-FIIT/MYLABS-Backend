@@ -114,14 +114,12 @@ const createfriends = async (req, res) => {
         id:req.body.friend_id
     }
     });
-    
     if (user2_exists && user1_exists){
       const customJson = Object.assign({user_id:req.params.id}, req.body);
       customJson.created_at = Date.now()
       customJson.updated_at = Date.now()
       
       await friends.create(customJson);
-      console.log("hello")
       res.send(customJson);
     }
     else {
@@ -195,6 +193,7 @@ const login = async (req, res) => {
       hashed = await bcrypt.compare(req.body.password, userreturn.password)
       if (hashed){
         const token = jwt.sign({ email: req.body.email }, 'secret', { expiresIn: '1h' });
+        console.log(token)
         res.status(200).json({"token": token, "id": userreturn.id});
       }
       else {

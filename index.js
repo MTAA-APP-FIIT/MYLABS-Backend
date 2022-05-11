@@ -3,6 +3,8 @@ const app = express()
 const project = require('./routes/project')
 const projectModel = require('./models/project')
 const taskModel = require('./models/task')
+const userModel = require('./models/user')
+const friendModel = require('./models/friends')
 const task = require('./routes/task')
 const user = require("./routes/user");
 const port = 3000
@@ -74,7 +76,7 @@ app.route("/users/:id/friends").post(authentication.checkAuthenticated, user.cre
 app.route("/users/:id/friends").delete(authentication.checkAuthenticated, user.declinefriends);
 
 app.route("/register").post(user.createuser);
-app.route("/login").post(authentication.checkNotAuthenticated, user.login);
+app.route("/login").post(user.login);
 
 
 app.route("/decline").get((req, res) => {
@@ -93,8 +95,6 @@ app.post("/img", diskStorage.single("image"), async (req, res) => {
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
-
-
 
 httpServer.listen(3000, () => {
   console.log("Server running")
@@ -148,11 +148,151 @@ io.on("connection", (socket) => {
     io.sockets.emit('RES/tasks/:taskId', {tasks})
   })
   
-  
-
-
-  socket.emit('update',(data) => {
+  socket.on('loadProfile', async (userId) => {
+    const profileInfo = await userModel.findOne({
+      where: {
+        id: userId
+      }
+    })
+    socket.emit('loadProfile', profileInfo)
   })
+
+  socket.on('loadFriends', async (userId) => {
+    const query = '(SELECT friend_id FROM friends WHERE user_id = '
+    let result = query.concat(String(userId));
+    let finalResult = result.concat(' AND state = true)')
+    const friends = await userModel.findAll({
+      where: {
+        id: {
+          [Sequelize.Op.in]: sequelize.literal(finalResult)
+        }
+      }
+    })
+    socket.emit('loadFriends', friends)
+  })
+
+  socket.on('loadFriend', async (userId) => {
+    const friend = await userModel.findAll({
+      where: {
+        id: userId
+      }
+    })
+    socket.emit('loadFriend', friend[0])
+  })
+
+  socket.on('loadProjects', async (userId) => {
+    const projects = await projectModel.findAll({
+      where: {
+        owner: userId
+      }
+    })
+    socket.emit('loadProjects', projects)
+  })
+
+  socket.on('request', async (userId, friend_id) => {
+    const customJson = Object.assign({user_id:userId, friend_id:friend_id, state:false, created_at: '', updated_at: ''});
+    customJson.created_at = Date.now()
+    customJson.updated_at = Date.now()
+    await friendModel.create(customJson);
+    const profile = await userModel.findAll({
+      where: {
+        id: friend_id
+      }
+    })
+
+    const profileMyslef = await userModel.findAll({
+      where: {
+        id: userId,
+      }
+    })
+
+    socket.broadcast.emit('request', profile[0])
+    socket.broadcast.emit('receivedRequest', profileMyslef[0])
+  })
+
+  socket.on('request2', async (userId) => {
+    socket.broadcast.emit('request2', "works")
+  })
+
+  socket.on('loadRequests', async (userId) => {
+    const query = '(SELECT friend_id FROM friends WHERE user_id = '
+    let result = query.concat(String(userId));
+    let finalResult = result.concat(' AND state = false)')
+    const requests = await userModel.findAll({
+      where: {
+        id: {
+          [Sequelize.Op.in]: sequelize.literal(finalResult)
+        }
+      }
+    })
+    socket.emit('loadRequests', requests)
+    socket.emit('loadRequests2', requests.length)
+  })
+  
+  socket.on('acceptInvite', async () => {
+    socket.broadcast.emit('acceptInvite')
+  })
+
+  socket.on('profileChange', async (userId) => {
+
+    const user = await userModel.findOne({
+      where: {
+        id: userId
+    }
+  });
+  socket.broadcast.emit('profileChange', user)
+  socket.broadcast.emit('profileChange2', user)
+  })
+
+
+
+  socket.on('acceptFriend', async (userId, friendId) => {
+        const friendsreturn = await friendModel.findOne({
+          where: {
+            user_id: userId,
+            friend_id: friendId
+        }
+      });
+      const customJson = Object.assign({updated_at:Date.now(), state: true});
+      friendsreturn.update(customJson)
+      const customJson2 = Object.assign({user_id:friendId, friend_id:userId, state:true, created_at: '', updated_at: ''});
+      customJson2.created_at = Date.now()
+      customJson2.updated_at = Date.now()
+      await friendModel.create(customJson2);
+      
+    const profile = await userModel.findAll({
+      where: {
+        id: userId
+      }
+    })
+    socket.broadcast.emit('acceptFriend', profile[0])
+    //io.sockets.emit('acceptFriend', profile[0])
+  })
+
+  socket.on('deleteFriend', async (userId, friendId) => {
+    const profile = await userModel.findOne({
+      where: {
+        id: userId,
+        }
+      });
+      await friendModel.destroy({
+        where: {
+          user_id: userId,
+          friend_id: friendId
+        }
+      });
+  
+      await friendModel.destroy({
+        where: {
+          user_id: friendId,
+          friend_id: userId 
+        }
+      });
+    socket.broadcast.emit('deleteFriend', profile)
+//io.sockets.emit('acceptFriend', profile[0])
+  })
+
+
   
 
 });
