@@ -4,6 +4,8 @@ const project = require('./routes/project')
 const projectModel = require('./models/project')
 const taskModel = require('./models/task')
 const userModel = require('./models/user')
+const user_taskModel = require('./models/user_task')
+const user_projectModel = require('./models/user_project')
 const friendModel = require('./models/friends')
 const task = require('./routes/task')
 const user = require("./routes/user");
@@ -21,6 +23,7 @@ const multer = require("multer");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { callbackify } = require('util');
+const { takeCoverage } = require('v8')
 
 // Define Multer
 const storage = multer.diskStorage({
@@ -55,14 +58,14 @@ try {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
   
-// app.route('/projects/owner/:owner').get(authentication.checkAuthenticated, project.getProjects);
+app.route('/projects/owner/:owner').get(authentication.checkAuthenticated, project.getProjects);
 app.route('/projects').post(authentication.checkAuthenticated, project.postProjects);
-// app.route('/projects/:projectId').get(authentication.checkAuthenticated, project.getProjectsId);
+app.route('/projects/:projectId').get(authentication.checkAuthenticated, project.getProjectsId);
 
-// app.route('/tasks/owner/:owner').get(authentication.checkAuthenticated, task.getTasks);
-// app.route('/tasks/project/:projectId').get(authentication.checkAuthenticated, task.getTasksByProject);
+app.route('/tasks/owner/:owner').get(authentication.checkAuthenticated, task.getTasks);
+app.route('/tasks/project/:projectId').get(authentication.checkAuthenticated, task.getTasksByProject);
 app.route('/tasks').post(authentication.checkAuthenticated, task.postTasks);
-// app.route('/tasks/:taskId').get(authentication.checkAuthenticated, task.getTasksId);
+app.route('/tasks/:taskId').get(authentication.checkAuthenticated, task.getTasksId);
 app.route('/tasks/:taskId').put(authentication.checkAuthenticated, task.updateTask);
 app.route('/tasks/:taskId').delete(authentication.checkAuthenticated, task.deleteTask);
 
@@ -180,6 +183,42 @@ io.on("connection", (socket) => {
     socket.emit('loadFriend', friend[0])
   })
 
+  socket.on('loadProject', async (projectId) => {
+    const project = await projectModel.findAll({
+      where: {
+        id: projectId
+      }
+    })
+    socket.emit('loadProject', project[0])
+  })
+
+  socket.on('loadTask', async (taskId) => {
+    const task = await taskModel.findAll({
+      where: {
+        id: taskId
+      }
+    })
+    socket.emit('loadTask', task[0])
+  })
+
+  socket.on('loadTasks', async (userId) => {
+    const tasks = await taskModel.findAll({
+      where: {
+        owner: userId
+      }
+    })
+    socket.emit('loadTasks', tasks)
+  })
+
+  socket.on('loadProjectTasks', async (projectId) => {
+    const tasks = await taskModel.findAll({
+      where: {
+        project_id: projectId
+      }
+    })
+    socket.emit('loadProjectTasks', tasks)
+  })
+
   socket.on('loadProjects', async (userId) => {
     const projects = await projectModel.findAll({
       where: {
@@ -244,6 +283,17 @@ io.on("connection", (socket) => {
   socket.broadcast.emit('profileChange2', user)
   })
 
+  socket.on('taskChange', async (taskId) => {
+    console.log(taskId)
+    const task = await userModel.findOne({
+      where: {
+        id: taskId
+    }
+  });
+  socket.broadcast.emit('taskChange', task)
+  // socket.broadcast.emit('taskChange', user)
+  })
+
 
 
   socket.on('acceptFriend', async (userId, friendId) => {
@@ -269,6 +319,79 @@ io.on("connection", (socket) => {
     //io.sockets.emit('acceptFriend', profile[0])
   })
 
+  socket.on('createTask', async (name, description, start, end, notes, owner, projectId) => {
+    const dateTime = new Date();
+    const day = ("0" + dateTime.getDate()).slice(-2);
+    const month = ("0" + (dateTime.getMonth() + 1)).slice(-2);
+    const year = dateTime.getFullYear();
+    
+    const date = year + "-" + month + "-" + day;
+    // console.log(name, description, start, end, notes, owner, projectId)
+    const newTask = await taskModel.create({
+        name: name,
+        owner: owner,
+        description: description,
+        start: new Date(start),
+        end: new Date(end),
+        notes: notes,
+        state: 1,
+        created_date: new Date(date),
+        updated_date: new Date(date),
+        delete: false,
+        project_id: projectId
+
+    })
+
+  
+    const newUser_Task = await user_taskModel.create({
+        id_user: owner,
+        id_task: newTask.id,
+        created_date: new Date(date),
+        updated_date: new Date(date),
+    })
+// socket.broadcast.emit('createTask', profile[0])
+//io.sockets.emit('acceptFriend', profile[0])
+  })
+
+  socket.on('createProject', async (name, description, deadline, owner) => {
+    const dateTime = new Date();
+    const day = ("0" + dateTime.getDate()).slice(-2);
+    const month = ("0" + (dateTime.getMonth() + 1)).slice(-2);
+    const year = dateTime.getFullYear();
+    
+    const date = year + "-" + month + "-" + day;
+    // console.log(name, description, start, end, notes, owner, projectId)
+    const newProject = await projectModel.create({
+      name: name,
+      owner: owner,
+      description: description,
+      deadline: new Date(deadline),
+      created_date: new Date(date),
+      updated_date: new Date(date),
+      delete: false,
+
+    })
+
+    const check_user_project = await user_projectModel.findOne({
+      where: {
+          id_user: BigInt(owner),
+          id_project: BigInt(newProject.id)
+      }
+    })
+    
+    if (check_user_project == null) {
+        const newProject_Task = await user_projectModel.create({
+            id_user: BigInt(owner),
+            id_project: BigInt(newProject.id),
+            created_date: new Date(date),
+            updated_date: new Date(date),
+        })
+    }
+
+// socket.broadcast.emit('createTask', profile[0])
+//io.sockets.emit('acceptFriend', profile[0])
+})
+
   socket.on('deleteFriend', async (userId, friendId) => {
     const profile = await userModel.findOne({
       where: {
@@ -289,6 +412,27 @@ io.on("connection", (socket) => {
         }
       });
     socket.broadcast.emit('deleteFriend', profile)
+//io.sockets.emit('acceptFriend', profile[0])
+  })
+
+  socket.on('deleteTask', async (taskId) => {
+    const task = await taskModel.findOne({
+      where: {
+        id: taskId,
+        }
+      });
+      await user_taskModel.destroy({
+        where: {
+          id_task: taskId
+        }
+      });
+  
+      await taskModel.destroy({
+        where: {
+          id: taskId
+        }
+      });
+    // socket.broadcast.emit('deleteTask', profile)
 //io.sockets.emit('acceptFriend', profile[0])
   })
 
